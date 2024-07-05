@@ -1,7 +1,6 @@
 import tkinter as tk
-import tkinter.ttk as ttk  # Import ttk for the table
+import tkinter.ttk as ttk
 import statistics
-
 
 def calculate_statistics():
     """Calculates the statistics of the numbers in the entry widget and displays them in a table."""
@@ -16,42 +15,39 @@ def calculate_statistics():
         total_sum = sum(numbers_list)
         count = len(numbers_list)
         median = statistics.median(numbers_list)
-        geometric_mean = (
-            statistics.geometric_mean(numbers_list) if count > 0 else 0
-        )  # Handle empty list
+        geometric_mean = statistics.geometric_mean(numbers_list) if count > 0 else 0
         largest = max(numbers_list)
         smallest = min(numbers_list)
         range_value = largest - smallest
+        average= total_sum /count if count > 0 else 0 # average
 
-        # Create or update the table data (if table exists)
+        # Create or update the table data
         table_data = [
-            ("Sum:", total_sum),
-            ("Count:", count),
-            ("Median:", median),
-            ("Geometric Mean:", geometric_mean),
-            ("Largest:", largest),
-            ("Smallest:", smallest),
-            ("Range:", range_value),
+            ("Sum", total_sum),
+            ("Count", count),
+            ("Average", average),
+            ("Median", median),
+            ("Geometric Mean", geometric_mean),
+            ("Largest", largest),
+            ("Smallest", smallest),
+            ("Range", range_value),
         ]
-        # Calculate index values (1-based)
-        # for i,(_, value) in enumerate(table_data[1:], start=1):
-        #     table_data[i]= (f"{i}",value)
 
         # Clear table data if previously populated
         table.delete(*table.get_children())
-        # Clear table data if previously populated
+
+        # Insert data into the table
         for i, (statistic, value) in enumerate(table_data, start=1):
             table.insert("", tk.END, values=(i, statistic, value))
 
     except ValueError:
         # Handle invalid input (non-numeric characters)
-        result_label.config(
-            text="Error: Please enter only numbers separated by commas."
-        )
-
+        result_label.config(text="Error: Please enter only numbers separated by commas.")
 
 # Create the main window
 window = tk.Tk()
+window.resizable(False, False)
+
 window.title("Infinite Number Statistics Calculator (Commas)")
 
 # Create labels for instructions
@@ -77,16 +73,17 @@ table = ttk.Treeview(
     table_frame, columns=("Index", "Statistic", "Value"), show="headings"
 )
 table.heading("Index", text="Index")
-table.column("Index", anchor=tk.CENTER)
+table.column("Index", anchor=tk.CENTER, width=50)
 
 table.heading("Statistic", text="Statistic")
+table.column("Statistic", anchor=tk.W, width=150)
 
 table.heading("Value", text="Value")
-table.pack()
+table.column("Value", anchor=tk.E, width=90)
+table.pack(fill="both", expand=True)
 
 # Label for potential error messages
-result_label = tk.Label(window, text="")
-result_label.pack(pady=10)
-
+result_label = tk.Label(window, text="", wraplength=400)
+result_label.pack(pady=10, fill="x")
 # Start the main event loop
 window.mainloop()
